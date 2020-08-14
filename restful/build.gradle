@@ -18,6 +18,7 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -28,6 +29,8 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    compile group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.1.5.Final'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version:'2.10.2'
 }
 
 test {

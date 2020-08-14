@@ -3,11 +3,16 @@ package com.example.restful.controller;
 import com.example.restful.domain.User;
 import com.example.restful.exception.UserNotFoundException;
 import com.example.restful.service.UserService;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -34,15 +39,15 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity createUser(@RequestBody User user){
-        User save = userService.save(user);
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+        User savedUser = userService.save(user);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(save.getId())
+                .buildAndExpand(savedUser.getId())
                 .toUri();
 
-        return ResponseEntity.created(uri).build();
+        return ResponseEntity.created(location).build();
     }
 
     @DeleteMapping("/users/{id}")
@@ -51,7 +56,6 @@ public class UserController {
         
         if(user==null){
             throw new UserNotFoundException(String.format("ID[%s] not found",id));
-
         }
     }
 }
