@@ -8,10 +8,22 @@ server:
 spring:
   messages:
     basename: messages
-  security:
-    user:
-      name: cho
-      password: 1234
+#  security:
+#    user:
+#      name: cho
+#      password: 1234
+  jpa:
+    show-sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
 
 management:
   endpoints:
