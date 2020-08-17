@@ -3,18 +3,19 @@ package com.example.restful.controller;
 import com.example.restful.domain.User;
 import com.example.restful.exception.UserNotFoundException;
 import com.example.restful.service.UserService;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,14 +29,19 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public User retrieveUser(@PathVariable("id") int id){
+    public EntityModel<User> retrieveUser(@PathVariable("id") int id){
         User user = userService.findOne(id);
 
         if(user==null){
             throw new UserNotFoundException(String.format("ID[%s] not found", id));
         }
 
-        return user;
+        //HATEOAS
+        EntityModel<User> model = new EntityModel<>(user);
+        WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+        model.add(linkBuilder.withRel("all-users"));
+
+        return model;
     }
 
     @PostMapping("/users")

@@ -8,3 +8,13 @@ server:
 spring:
   messages:
     basename: messages
+  security:
+    user:
+      name: cho
+      password: 1234
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
